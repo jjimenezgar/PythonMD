@@ -1,2 +1,2 @@
 # PythonMD
-It is a repository with tool to make molecular dynamic analysis
+It is a repository with tools to make molecular dynamic analysis
