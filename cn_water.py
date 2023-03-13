@@ -76,34 +76,51 @@ def graf_cn(X, Y):
     plt.show()
     
     
-
 def processing(olig):
+    """
+    Procesa la simulación para calcular el número de coordinación promedio
+    de un conjunto de átomos de oxígeno.
+
+    Parameters
+    ----------
+    olig : int
+        Número del oligómero a procesar.
+
+    Returns
+    -------
+    None.
+
+    """
+    # Definir la ruta del archivo de simulación
     file = "/home/johnconnor/Documentos/Mesoporos/cluster_result/OMC3/{}_cn.xyz".format(olig)
+
+    # Crear un DataFrame vacío para almacenar los resultados
     df = pd.DataFrame(columns=["R", "CN"])
 
-   
-    radio_p=20
-    step=5
-    final= radio_p + step
-    
+    # Definir los parámetros para el cálculo del número de coordinación
+    radio_p = 20
+    step = 5
+    final = radio_p + step
+
+    # Iterar sobre los valores de r_cut para calcular el número de coordinación
     for i in np.arange(step, final, step):
         # Calcular el valor de r_cut
         r_cut_lo = (final) - i
         r_cut_hi = radio_p - i
 
+        # Calcular el número de coordinación
+        CN = cn_atom(file, r_cut_hi, r_cut_lo)
 
-        
-        CN = cn_atom(file,r_cut_hi,r_cut_lo)
-
-    
-        # Agregar una fila al DataFrame con los valores de r_cut y "difusión" actuales
+        # Agregar una fila al DataFrame con los valores de r_cut y el número de coordinación actual
         df = df.append({"R": r_cut_lo, "CN": CN}, ignore_index=True)
-        
-    graf_cn(df.R,df.CN)
+
+    # Graficar los resultados
+    graf_cn(df.R, df.CN)
+
     
 if __name__ == '__main__':
     
-       for olig in [12]:
+       for olig in [4,8,12,24,36]:
           #olig="water"
           processing(olig)
         
