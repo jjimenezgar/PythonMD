@@ -20,9 +20,9 @@ def cn_atom(file, r_cut_lo, r_cut_hi):
     file : str
         Ruta del archivo que contiene la simulación.
     r_cut_lo : float
-        Radio de corte inferior para buscar átomos de Pt.
+        Radio de corte inferior para buscar átomos de Ox.
     r_cut_hi : float
-        Radio de corte superior para buscar átomos de Pt.
+        Radio de corte superior para buscar átomos de Ox.
 
     Returns
     -------
@@ -34,7 +34,7 @@ def cn_atom(file, r_cut_lo, r_cut_hi):
     u = mda.Universe(file)
 
     # Selecciona solo los átomos de oxígeno
-    oxygen = u.select_atoms("prop 30 < z and prop z < 70 and name O1 and around {} name Pt and not around {} name Pt".format(r_cut_hi, r_cut_lo))
+    oxygen = u.select_atoms("prop 30 < z and prop z < 60 and name O1 and around {} name O1 and not around {} name O1".format(r_cut_hi, r_cut_lo))
     
     coord = [len(u.select_atoms("name O1 and around 3.25 index {}".format(atom.index))) 
          for ts in u.trajectory 
@@ -92,7 +92,7 @@ def processing(olig):
 
     """
     # Definir la ruta del archivo de simulación
-    file = "/home/johnconnor/Documentos/Mesoporos/cluster_result/OMC3/{}_cn.xyz".format(olig)
+    file = "~/{}_cn.xyz".format(olig)
 
     # Crear un DataFrame vacío para almacenar los resultados
     df = pd.DataFrame(columns=["R", "CN"])
