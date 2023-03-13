@@ -1,46 +1,76 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar  8 10:17:47 2023
-
-@author: johnconnor
+Este script calcula el número de coordinación de un conjunto de átomos de oxígeno
+en una simulación de dinámica molecular utilizando la librería MDAnalysis.
 """
 
 import MDAnalysis as mda
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
 
 
-def cn_atom(file,r_cut_lo,r_cut_hi):
-# Load trajectory and topology
+def cn_atom(file, r_cut_lo, r_cut_hi):
+    """
+    Calcula el número de coordinación de un conjunto de átomos de oxígeno.
+
+    Parameters
+    ----------
+    file : str
+        Ruta del archivo que contiene la simulación.
+    r_cut_lo : float
+        Radio de corte inferior para buscar átomos de Pt.
+    r_cut_hi : float
+        Radio de corte superior para buscar átomos de Pt.
+
+    Returns
+    -------
+    float
+        El número de coordinación medio del conjunto de átomos de oxígeno.
+
+    """
+    # Carga la trayectoria y la topología
     u = mda.Universe(file)
 
-# Select only oxygen atoms
-    oxygen = u.select_atoms("prop 5 < z and prop z < 30 and name O1 and around {} name Cgr and not around {} name Cgr".format(r_cut_hi,r_cut_lo))
+    # Selecciona solo los átomos de oxígeno
+    oxygen = u.select_atoms("prop 30 < z and prop z < 70 and name O1 and around {} name Pt and not around {} name Pt".format(r_cut_hi, r_cut_lo))
     
-# Loop over all frames and calculate tetrahedral order parameter
-
-    coord=[]
-    for ts in u.trajectory:
-        if ts.frame == 0:
-            for atom in oxygen:
-                neighbors = u.select_atoms("name O1 and around 3.5 index {}".format(atom.index))        
-                coord.append(len(neighbors))
-    
+    coord = [len(u.select_atoms("name O1 and around 3.25 index {}".format(atom.index))) 
+         for ts in u.trajectory 
+         if ts.frame == 0 
+         for atom in oxygen]
+         
     return np.mean(coord)
 
-def graf_cn(X,Y):
-    
-    plt.plot(X, Y, color='red', linestyle='dashed', linewidth=2)
 
-   
-    plt.title('Water molecules CN in the pore', fontsize=20)
 
-    # Agregar etiquetas a los ejes
-    plt.xlabel('Radius (Å)')
-    plt.ylabel('Cordination Number (CN)')
+def graf_cn(X, Y):
+    """
+    Grafica el número de coordinación en función del radio.
+
+    Parameters
+    ----------
+    X : array-like
+        Arreglo con los radios.
+    Y : array-like
+        Arreglo con los números de coordinación correspondientes.
+
+    Returns
+    -------
+    None.
+
+    """
+    plt.plot(X, Y, color='black', linestyle='dashed', linewidth=2, label="12")
+
+    plt.title('Coordination number/water', fontsize=18)
+
+    # Agrega etiquetas a los ejes
+    plt.xlabel('Radius (Å)', fontsize=16)
+    plt.ylabel('Coordination Number (CN)', fontsize=16)
+    # plt.xticks(np.arange
+
+    plt.legend(fontsize=12)
 
     # Mostrar el grafico
     plt.show()
@@ -48,13 +78,12 @@ def graf_cn(X,Y):
     
 
 def processing(olig):
-    file = "/home/johnconnor/Documentos/Mesoporos/cluster_result/OMC3/{}_300.xyz".format(olig)
-#    image_name="{}_omc3_pore_msd_300.png".format(olig)
+    file = "/home/johnconnor/Documentos/Mesoporos/cluster_result/OMC3/{}_cn.xyz".format(olig)
     df = pd.DataFrame(columns=["R", "CN"])
 
    
-    radio_p=15
-    step=3
+    radio_p=20
+    step=5
     final= radio_p + step
     
     for i in np.arange(step, final, step):
@@ -74,7 +103,7 @@ def processing(olig):
     
 if __name__ == '__main__':
     
-       for olig in [4,8,12,24,36]:
+       for olig in [12]:
           #olig="water"
           processing(olig)
         
