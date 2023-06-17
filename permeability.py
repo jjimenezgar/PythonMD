@@ -5,22 +5,22 @@ import math
 
 def calculate_num_atoms(file, selection):
     """
-    Calcula el número promedio de átomos en una región específica de una trayectoria.
+    Calculates the average number of atoms in a specific region of a trajectory.
 
-    Parámetros:
-    - file (str): Ruta al archivo XYZ que contiene la trayectoria.
-    - selection (str): Cadena de selección para los átomos de interés.
+    Parameters:
+    - file (str): Path to the XYZ file containing the trajectory.
+    - selection (str): Selection string for the atoms of interest.
 
-    Retorna:
-    - num_atoms (float): Número promedio de átomos en la región especificada.
+    Returns:
+    - num_atoms (float): Average number of atoms in the specified region.
 
-    Requiere la biblioteca MDAnalysis: https://www.mdanalysis.org/
+    Requires the MDAnalysis library: https://www.mdanalysis.org/
 
-    La función realiza los siguientes pasos:
-    1. Carga la trayectoria y la topología.
-    2. Selecciona solo los átomos en la región específica.
-    3. Calcula el número de átomos en cada paso de la trayectoria.
-    4. Retorna el número promedio de átomos.
+    The function performs the following steps:
+    1. Loads the trajectory and topology.
+    2. Selects only the atoms in the specific region.
+    3. Calculates the number of atoms in each frame of the trajectory.
+    4. Returns the average number of atoms.
     """
     u = mda.Universe(file)
 
@@ -34,15 +34,15 @@ def calculate_num_atoms(file, selection):
 
 def calculate_n_moles(n_atoms):
     """
-    Calcula el número de moles a partir del número de átomos.
+    Calculates the number of moles from the number of atoms.
 
-    Parámetros:
-    - n_atoms (float): Número de átomos.
+    Parameters:
+    - n_atoms (float): Number of atoms.
 
-    Retorna:
-    - n_moles (float): Número de moles.
+    Returns:
+    - n_moles (float): Number of moles.
 
-    Utiliza la constante de Avogadro para realizar la conversión.
+    Uses Avogadro's constant for the conversion.
     """
     avogadro = 6.022e23
     n_moles = n_atoms / avogadro
@@ -51,14 +51,14 @@ def calculate_n_moles(n_atoms):
 
 def calculate_metal_area(lattice, atoms):
     """
-    Calcula el área metálica activa a partir del tamaño de la celda de la red y el número de átomos metálicos.
+    Calculates the active metal area from the lattice cell size and the number of metal atoms.
 
-    Parámetros:
-    - lattice (float): Tamaño de la celda de la red en Angstrom.
-    - atoms (float): Número de átomos metálicos.
+    Parameters:
+    - lattice (float): Lattice cell size in Angstrom.
+    - atoms (float): Number of metal atoms.
 
-    Retorna:
-    - metal_area (float): Área metálica activa en metros cuadrados.
+    Returns:
+    - metal_area (float): Active metal area in square meters.
     """
     area_atom = lattice ** 2 * math.sqrt(3/4)
     metal_area = (atoms * area_atom) * 1e-20  # m²
@@ -67,13 +67,13 @@ def calculate_metal_area(lattice, atoms):
 
 def calculate_total_metal_area(lattice):
     """
-    Calcula el área metálica total a partir del tamaño de la celda de la red.
+    Calculates the total metal area from the lattice cell size.
 
-    Parámetros:
-    - lattice (float): Tamaño de la celda de la red en Angstrom.
+    Parameters:
+    - lattice (float): Lattice cell size in Angstrom.
 
-    Retorna:
-    - total_area (float): Área metálica total en metros cuadrados.
+    Returns:
+    - total_area (float): Total metal area in square meters.
     """
     area_atom = lattice ** 2 * math.sqrt(3/4)
     total_area = (492 * area_atom) * 1e-20  # m²
@@ -82,62 +82,63 @@ def calculate_total_metal_area(lattice):
 
 def calculate_permeability(value, area):
     """
-    Calcula la permeabilidad a partir de un valor y un área.
+    Calculates the permeability from a value and an area.
 
-    Parámetros:
-    - value (float): Valor a considerar.
-    - area (float): Área en metros cuadrados.
+    Parameters:
+    - value (float): Value to consider.
+    - area (float): Area in square meters.
 
-    Retorna:
-    - permeability (float): Permeabilidad en mol/(m²·s).
+    Returns:
+    - permeability (float): Permeability in mol/(m²·s).
     """
     permeability = value / area
     return permeability
 
 
-file = "/ruta/al/archivo.xyz"
+if __name__ == '__main__':
+    file = "/path/to/file.xyz"
 
-# Calcular número promedio de átomos de oxígeno en la superficie metálica activa
-selection = "name Ox and around 5 name Pt"
-num_atoms = calculate_num_atoms(file, selection)
+    # Calculate the average number of oxygen atoms on the active metal surface
+    selection = "name Ox and around 5 name Pt"
+    num_atoms = calculate_num_atoms(file, selection)
 
-# Calcular número de moles
-n_moles = calculate_n_moles(num_atoms)
+    # Calculate the number of moles
+    n_moles = calculate_n_moles(num_atoms)
 
-# Calcular número promedio de átomos metálicos
-selection = "name Pt and around 3.0 name O1"
-atoms_Pt = calculate_num_atoms(file, selection)
+    # Calculate the average number of metal atoms
+    selection = "name Pt and around 3.0 name O1"
+    atoms_Pt = calculate_num_atoms(file, selection)
 
-# Definir tamaño de la celda de la red
-lattice_Pt = 3.92  # Angstrom
+    # Define the lattice cell size
+    lattice_Pt = 3.92  # Angstrom
 
-# Calcular área metálica activa e inactiva
-area_activa = calculate_metal_area(lattice_Pt, atoms_Pt)
-area_inactiva = calculate_metal_area(lattice_Pt, calculate_num_atoms(file, "name Pt and around 3.0 name Cgr C F O3 O4 S"))
+    # Calculate active and inactive metal areas
+    area_active = calculate_metal_area(lattice_Pt, atoms_Pt)
+    area_inactive = calculate_metal_area(lattice_Pt, calculate_num_atoms(file, "name Pt and around 3.0 name Cgr C F O3 O4 S"))
 
-# Calcular área metálica total
-total_area = calculate_total_metal_area(lattice_Pt)
+    # Calculate total metal area
+    total_area = calculate_total_metal_area(lattice_Pt)
 
-# Calcular utilización de la superficie metálica
-utilization = ((total_area - area_inactiva) / total_area) * 100
+    # Calculate metal surface utilization
+    utilization = ((total_area - area_inactive) / total_area) * 100
 
-# Calcular permeabilidad
-value = n_moles / (num_atoms * 10)  # moles por picosegundos
-permeability = calculate_permeability(value, area_activa)
+    # Calculate permeability
+    value = n_moles / (num_atoms * 10)  # moles per picoseconds
+    permeability = calculate_permeability(value, area_active)
 
-# Generar el reporte de resultados
-reporte_resultados = f"Reporte de Resultados\n"
-reporte_resultados += f"---------------------\n"
-reporte_resultados += f"Area metálica activa: {area_activa} m²\n"
-reporte_resultados += f"Area metálica inactiva: {area_inactiva} m²\n"
-reporte_resultados += f"Area metálica total: {total_area} m²\n"
-reporte_resultados += f"Utilización de la superficie metálica: {utilization}%\n"
-reporte_resultados += f"Permeabilidad por área metálica: {permeability} mol/(m²·s)\n"
-reporte_resultados += f"Número promedio de átomos de oxígeno en la superficie metálica en la dinámica: {num_atoms}\n"
+    # Generate the results report
+    result_report = f"Results Report\n"
+    result_report += f"----------------\n"
+    result_report += f"Active metal area: {area_active} m²\n"
+    result_report += f"Inactive metal area: {area_inactive} m²\n"
+    result_report += f"Total metal area: {total_area} m²\n"
+    result_report += f"Metal surface utilization: {utilization}%\n"
+    result_report += f"Permeability per metal area: {permeability} mol/(m²·s)\n"
+    result_report += f"Average number of oxygen atoms on the metal surface in the trajectory: {num_atoms}\n"
 
-# Guardar el reporte en un archivo de texto
-with open("reporte_resultados.txt", "w") as f:
-    f.write(reporte_resultados)
+    # Save the report to a text file
+    with open("result_report.txt", "w") as f:
+        f.write(result_report)
 
-# Imprimir el reporte en la consola
-print(reporte_resultados)
+    # Print the report to the console
+    print(result_report)
