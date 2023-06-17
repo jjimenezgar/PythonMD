@@ -6,16 +6,16 @@ from MDAnalysis.analysis import rdf
 
 def read_input_file(input_file):
     """
-    Lee un archivo de entrada y crea una instancia de Universe.
+    Read an input file and create a Universe instance.
 
     Args:
-        input_file (str): Ruta del archivo de entrada.
+        input_file (str): Path to the input file.
 
     Returns:
-        Universe: Instancia de Universe creada a partir del archivo de entrada.
+        Universe: Universe instance created from the input file.
 
     Raises:
-        ValueError: Si no se puede leer el archivo de entrada.
+        ValueError: If the input file cannot be read.
     """
     try:
         u = mda.Universe(input_file)
@@ -25,33 +25,33 @@ def read_input_file(input_file):
 
 def create_large_cell(u):
     """
-    Crea una celda grande duplicando las dimensiones de la celda original.
+    Create a large cell by doubling the dimensions of the original cell.
 
     Args:
-        u (Universe): Instancia de Universe.
+        u (Universe): Universe instance.
 
-    Modifica:
-        Modifica las dimensiones de la instancia de Universe para crear una celda grande.
+    Modifies:
+        Modifies the dimensions of the Universe instance to create a large cell.
     """
     d = np.max(u.atoms.positions) - np.min(u.atoms.positions)
     u.dimensions = [2*d, 2*d, 2*d, 90, 90, 90]
 
 def calculate_rdf(u, atom_sel1, atom_sel2):
     """
-    Calcula la función de distribución radial (RDF) para dos selecciones de átomos.
+    Calculate the radial distribution function (RDF) for two atom selections.
 
     Args:
-        u (Universe): Instancia de Universe.
-        atom_sel1 (str): Selección de átomos 1.
-        atom_sel2 (str): Selección de átomos 2.
+        u (Universe): Universe instance.
+        atom_sel1 (str): Atom selection 1.
+        atom_sel2 (str): Atom selection 2.
 
     Returns:
-        ndarray, ndarray: Arreglos de NumPy que contienen los valores del RDF y los bins correspondientes.
+        ndarray, ndarray: NumPy arrays containing the RDF values and the corresponding bins.
 
-    Nota:
-        Las selecciones de átomos deben seguir la sintaxis utilizada por MDAnalysis.
+    Note:
+        The atom selections must follow the syntax used by MDAnalysis.
 
-    Referencia:
+    Reference:
         https://docs.mdanalysis.org/stable/documentation_pages/selections.html
     """
     atom_1 = u.select_atoms(atom_sel1)
@@ -68,26 +68,26 @@ def calculate_rdf(u, atom_sel1, atom_sel2):
 
 def save_data(output_file, bins, d_rdf):
     """
-    Guarda los datos del RDF en un archivo de salida.
+    Save RDF data to an output file.
 
     Args:
-        output_file (str): Ruta del archivo de salida.
-        bins (ndarray): Arreglo de NumPy que contiene los bins del RDF.
-        d_rdf (ndarray): Arreglo de NumPy que contiene los valores del RDF.
+        output_file (str): Path to the output file.
+        bins (ndarray): NumPy array containing the RDF bins.
+        d_rdf (ndarray): NumPy array containing the RDF values.
 
-    Nota:
-        Los datos se guardan en formato CSV con los bins y los valores del RDF como columnas.
+    Note:
+        The data is saved in CSV format with the bins and RDF values as columns.
     """
     data = np.column_stack((bins, d_rdf))
     np.savetxt(output_file, data, delimiter=',')
 
 def plot_rdf(bins, d_rdf):
     """
-    Grafica el RDF.
+    Plot the RDF.
 
     Args:
-        bins (ndarray): Arreglo de NumPy que contiene los bins del RDF.
-        d_rdf (ndarray): Arreglo de NumPy que contiene los valores del RDF.
+        bins (ndarray): NumPy array containing the RDF bins.
+        d_rdf (ndarray): NumPy array containing the RDF values.
     """
     fig, ax = plt.subplots()
     ax.set_xlim(1, 10)
@@ -103,13 +103,13 @@ def plot_rdf(bins, d_rdf):
 
 def process_rdf(input_file, output_file, atom_sel1, atom_sel2):
     """
-    Procesa el cálculo del RDF.
+    Process the RDF calculation.
 
     Args:
-        input_file (str): Ruta del archivo de entrada.
-        output_file (str): Ruta del archivo de salida.
-        atom_sel1 (str): Selección de átomos 1.
-        atom_sel2 (str): Selección de átomos 2.
+        input_file (str): Path to the input file.
+        output_file (str): Path to the output file.
+        atom_sel1 (str): Atom selection 1.
+        atom_sel2 (str): Atom selection 2.
     """
     # Parse input file
     u = read_input_file(input_file)
