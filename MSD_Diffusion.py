@@ -1,4 +1,3 @@
-
 import MDAnalysis.analysis.msd as msda
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,133 +7,133 @@ import pandas as pd
 
 def msd_z(file, atom, z_lo, z_hi):
     """
-    Calcula el desplazamiento cuadrático medio (MSD) de un conjunto de átomos en una región específica del sistema.
+    Calculates the Mean Squared Displacement (MSD) of a set of atoms in a specific region of the system.
 
     Parameters
     ----------
     file : str
-        Ruta del archivo que contiene la simulación.
+        Path to the simulation file.
     atom : str
-        Nombre del átomo a seleccionar.
+        Name of the atom to select.
     z_lo : float
-        Valor inferior del rango en el eje Z.
+        Lower value of the range on the Z-axis.
     z_hi : float
-        Valor superior del rango en el eje Z.
+        Upper value of the range on the Z-axis.
 
     Returns
     -------
     np.ndarray
-        Array con los valores de MSD para cada tiempo.
+        Array with the MSD values for each time.
     np.ndarray
-        Array con los valores de tiempo de lag correspondientes a cada MSD.
+        Array with the corresponding lag times for each MSD.
 
     """
-    # Carga la trayectoria y selecciona los átomos en la región específica
+    # Load the trajectory and select atoms in the specific region
     u = mda.Universe(file)
     water = u.select_atoms("prop {} < z and prop z < {}".format(z_lo, z_hi))
 
-    # Calcula el MSD utilizando la clase EinsteinMSD de MDAnalysis
+    # Calculate MSD using the EinsteinMSD class from MDAnalysis
     MSD = msda.EinsteinMSD(water, select=atom, msd_type='xyz', fft=True)
     MSD.run()
 
-    # Obtiene los resultados de MSD y los tiempos de lag
+    # Get the MSD results and lag times
     msd = MSD.results.timeseries
     nframes = MSD.n_frames
-    timestep = 1  # Esto debe ser el tiempo real entre frames
+    timestep = 1  # This should be the actual time between frames
     lagtimes = np.arange(nframes) * timestep
 
     return msd, lagtimes
 
 def plot_msd(index_start, index_end, msd, lagtimes):
     """
-    Grafica el MSD y calcula el coeficiente de difusión.
+    Plots the MSD and calculates the diffusion coefficient.
 
     Parameters
     ----------
     index_start : int
-        Índice de inicio para el cálculo del MSD y la regresión lineal.
+        Start index for calculating MSD and performing linear regression.
     index_end : int
-        Índice de fin para el cálculo del MSD y la regresión lineal.
+        End index for calculating MSD and performing linear regression.
     msd : np.ndarray
-        Array con los valores de MSD para cada tiempo.
+        Array with the MSD values for each time.
     lagtimes : np.ndarray
-        Array con los valores de tiempo de lag correspondientes a cada MSD.
+        Array with the corresponding lag times for each MSD.
 
     Returns
     -------
     float
-        Coeficiente de difusión calculado a partir de la pendiente de la regresión lineal.
+        Diffusion coefficient calculated from the slope of the linear regression.
 
     """
-    # Realiza la regresión lineal del MSD en el intervalo especificado
+    # Perform linear regression of MSD within the specified interval
     slope, intercept, r_value, p_value, std_err = stats.linregress(lagtimes[index_start:index_end], msd[index_start:index_end])
 
-    # Grafica el MSD con la regresión lineal
+    # Plot MSD with linear regression
     ax = sns.regplot(x=lagtimes[index_start:index_end], y=msd[index_start:index_end], line_kws={'label': "y={0:.5f}x+{1:.5f}".format(slope, intercept)})
     ax.set(xlabel="MSD (A²)", ylabel="Time (ps)")
     ax.legend()
     plt.show()
 
-    # Calcula el coeficiente de difusión
+    # Calculate the diffusion coefficient
     diffusion = slope / 6
 
     return diffusion
 
 def msd_z_grid(atom, file, image_name):
     """
-    Calcula y grafica el coeficiente de difusión del agua en diferentes regiones a lo largo del eje Z.
+    Calculates and plots the diffusion coefficient of water in different regions along the Z-axis.
 
     Parameters
     ----------
     atom : str
-        Nombre del átomo a seleccionar.
+        Name of the atom to select.
     file : str
-        Ruta del archivo que contiene la simulación.
+        Path to the simulation file.
     image_name : str
-        Nombre del archivo de imagen para guardar la visualización.
+        Name of the image file to save the visualization.
 
     """
-    # Crear un DataFrame vacío para almacenar los resultados
+    # Create an empty DataFrame to store the results
     df = pd.DataFrame(columns=["z", "diffusion"])
 
-    # Crear un array de numpy con los valores de z_hi directamente
-    z = np.arange(0, 100, 10)  # Modificar según las regiones deseadas
+    # Create a numpy array with the z_hi values directly
+    z = np.arange(0, 100, 10)  # Modify according to desired regions
 
-    # Crear un array de numpy para almacenar los resultados de msd_z y plot_msd
+    # Create a numpy array to store the results of msd_z and plot_msd
     diffusion = np.zeros(len(z))
 
-    # Iterar sobre los valores de z y calcular msd y diffusion
+    # Iterate over z values and calculate msd and diffusion
     for i, z_hi in enumerate(z):
         z_lo = z_hi - 5
         m = msd_z(file, atom, z_lo, z_hi)
         diffusion[i] = plot_msd(10, 60, m[0], m[1])
 
-    # Crear un DataFrame de pandas con los resultados
+    # Create a pandas DataFrame with the results
     df = pd.DataFrame({'z': z, 'diffusion': diffusion * 10})
 
-    # Graficar los resultados
+    # Plot the results
     dosd_plot(df.diffusion, df.z, image_name)
 
 def dosd_plot(x, y, image_name):
     """
-    Grafica la densidad del coeficiente de difusión en función de la posición Z.
+    Plots the density of diffusion coefficient as a function of the Z position.
 
     Parameters
     ----------
     x : np.ndarray
-        Array con los valores de coeficiente de difusión.
+        Array with the diffusion coefficient values.
     y : np.ndarray
-        Array con los valores de posición Z.
+        Array with the Z position values.
     image_name : str
-        Nombre del archivo de imagen para guardar la visualización.
+        Name of the image file to save the visualization.
 
     """
     sns.set_style("white")
     sns.kdeplot(x=x, y=y, cmap="BuPu", shade=False, bw_adjust=0.90)
 
-    # Configuración del eje X
+    # X-axis configuration
     plt.rcParams['font.family'] = 'Arial'
-    plt.xlabel('Difusión / x10$^{-9}$ m$^2$.s$^{-1}$', fontsize=20)
+    plt.xlabel('Diffusion / x10$^{-9}$ m$^2$.s$^{-1}$', fontsize=20)
     plt.xticks(fontsize=13)
     plt.xlim(0, 2.5)
     plt.xticks(np.arange(0.0, 3.1, 0.5), fontsize=15)
@@ -142,8 +141,8 @@ def dosd_plot(x, y, image_name):
     plt.tick_params(axis='x', which='both', bottom=True, top=True)
     plt.gca().xaxis.set_tick_params(which='both', width=1, direction='in', length=7, pad=5)
 
-    # Configuración del eje Y
-    plt.ylabel('Posición Z (Å)', fontsize=20)
+    # Y-axis configuration
+    plt.ylabel('Z Position (Å)', fontsize=20)
     plt.ylim(0, 100)
     plt.yticks(np.arange(25, 125, 25), fontsize=15)
     plt.yticks(np.arange(12.5, 112.5, 12.5), minor=True)
@@ -155,10 +154,3 @@ def dosd_plot(x, y, image_name):
     plt.tight_layout()
     plt.savefig(image_name, dpi=200)
     plt.show()
-
-
-        
-    
-    
-    
-
