@@ -3,54 +3,53 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import density
 import matplotlib.pyplot as plt
 
-# Archivo de entrada
+# Input file
 file = "input.xyz"
 
-# Crear objeto de Universe
+# Create Universe object
 u = mda.Universe(file)
 
 def density_2D(u):
     """
-    Calcula y visualiza la densidad media 2D de agua en una caja de simulación.
+    Calculates and visualizes the 2D average density of water in a simulation box.
 
     Args:
-        u (Universe): Objeto Universe de MDAnalysis.
+        u (Universe): MDAnalysis Universe object.
 
     Returns:
         None
     """
 
-    # Definir la coordenada Z máxima de la caja
-    z_hi = "Introducir maximo de caja en Z"
+    # Define the maximum Z coordinate of the box
+    z_hi = "Enter maximum box Z value"
 
-    # Seleccionar los átomos de oxígeno en la región deseada (por encima de z_hi)
+    # Select oxygen atoms in the desired region (above z_hi)
     ow = u.select_atoms("name O1 and prop {} > z".format(z_hi))
 
-    # Realizar el análisis de densidad
+    # Perform density analysis
     dens = density.DensityAnalysis(ow, delta=3.5, padding=0)
     dens.run()
 
-    # Obtener la grilla de densidad y convertirla a unidades SPC/E
+    # Get the density grid and convert it to SPC/E units
     grid = dens.results.density.grid
     dens.results.density.convert_density('SPC')
 
-    # Calcular la densidad media en el eje Z (vista superior)
+    # Calculate the average density along the Z axis (top view)
     avg = grid.mean(axis=-1)
 
-    # Crear la figura y los ejes
+    # Create the figure and axes
     fig, ax = plt.subplots(figsize=(10, 8))
 
-    # Crear el mapa de calor de la densidad media
+    # Create the heat map of the average density
     im = ax.imshow(avg, interpolation="bicubic", cmap='jet', vmin=0, vmax=1)
 
-    # Agregar una barra de color
+    # Add a colorbar
     cbar = plt.colorbar(im)
     cbar.set_label('Mean density of water over SPC/E literature value')
 
-    # Etiquetas de los ejes
+    # Axis labels
     plt.xlabel('X-axis ($\AA$)')
     plt.ylabel('Y-axis ($\AA$)')
 
-# Llamar a la función para ejecutar el análisis
+# Call the function to perform the analysis
 density_2D(u)
-
