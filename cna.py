@@ -5,29 +5,29 @@ from ovito.vis import Viewport, OSPRayRenderer
 
 def calculate_atomic_strain(input_file):
     """
-    Calcula la deformación atómica y la estructura del sistema a partir de un archivo XYZ y guarda una imagen de la simulación.
+    Calculates atomic strain and structure of the system from an XYZ file and saves an image of the simulation.
 
     Args:
-        input_file (str): Ruta del archivo XYZ de entrada.
+        input_file (str): Path to the input XYZ file.
 
     Returns:
         None
     """
-    # Importar archivo
+    # Import the file
     pipeline = import_file(input_file)
     pipeline.add_to_scene()
     data = pipeline.compute()
 
-    # Aplicar el modificador SelectTypeModifier para seleccionar todas las partículas del tipo 'Ox'
+    # Apply SelectTypeModifier to select all particles of type 'Ox'
     pipeline.modifiers.append(SelectTypeModifier(
         operate_on="particles",
         property="Particle Type",
         types={'O1', 'O2', 'O3', 'O4', 'H1', 'H2', 'C', 'Cgr', 'F', 'S'}
     ))
-    # Agregar el modificador DeleteSelectedModifier para eliminar las partículas seleccionadas
+    # Add DeleteSelectedModifier to delete the selected particles
     pipeline.modifiers.append(DeleteSelectedModifier())
 
-    # Agregar el modificador CommonNeighborAnalysisModifier para determinar el tipo estructural de cada átomo
+    # Add CommonNeighborAnalysisModifier to determine the structural type of each atom
     pipeline.modifiers.append(CommonNeighborAnalysisModifier())
 
     def compute_fraction(frame, data):
@@ -42,33 +42,34 @@ def calculate_atomic_strain(input_file):
 
     pipeline.modifiers.append(compute_fraction)
 
-    print("Fracción de FCC:", pipeline.compute().attributes['fcc_fraction'])
-    print("Fracción de HCP:", pipeline.compute().attributes['hcp_fraction'])
-    print("Fracción de otros:", pipeline.compute().attributes['other_fraction'])
+    print("FCC Fraction:", pipeline.compute().attributes['fcc_fraction'])
+    print("HCP Fraction:", pipeline.compute().attributes['hcp_fraction'])
+    print("Other Fraction:", pipeline.compute().attributes['other_fraction'])
 
-    # Agregar el modificador SliceModifier para cortar la celda
+    # Add SliceModifier to cut the cell
     pipeline.modifiers.append(SliceModifier(
-        distance=220.0  # Este valor está relacionado con la posición donde hacer el corte en la celda
+        distance=220.0  # This value is related to the position to make the cut in the cell
     ))
 
-    # Agregar el modificador ColorCodingModifier para codificar el color según el tipo de estructura
+    # Add ColorCodingModifier to color code the particles based on the structure type
     pipeline.modifiers.append(ColorCodingModifier(
         operate_on="particles",
         property='Structure Type',
         gradient=ColorCodingModifier.Rainbow()
     ))
 
-    data.cell.vis.enabled = False  # Desactivar la visualización de la celda
+    data.cell.vis.enabled = False  # Disable cell visualization
 
-    # Renderizar y guardar una imagen de la simulación
+    # Render and save an image of the simulation
     vp = Viewport(type=Viewport.Type.Right)
     vp.zoom_all()
     vp.render_image(filename='simulation.png',
                     size=(1000, 1000),
                     renderer=OSPRayRenderer())
 
-    print("La simulación se ha guardado como 'simulation.png'.")
+    print("The simulation has been saved as 'simulation.png'.")
 
-# Ejemplo de uso
-input_file = "/path/to/input_file.xyz"
-calculate_atomic_strain(input_file)
+if __name__ == '__main__':
+    # Example usage
+    input_file = "/path/to/input_file.xyz"
+    calculate_atomic_strain(input_file)
