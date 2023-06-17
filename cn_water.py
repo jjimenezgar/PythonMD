@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Este script calcula el número de coordinación de un conjunto de átomos de oxígeno
-en una simulación de dinámica molecular utilizando la librería MDAnalysis.
+This script calculates the coordination number of a set of oxygen atoms
+in a molecular dynamics simulation using the MDAnalysis library.
 """
 
 import MDAnalysis as mda
@@ -13,27 +13,27 @@ import pandas as pd
 
 def cn_atom(file, r_cut_lo, r_cut_hi):
     """
-    Calcula el número de coordinación de un conjunto de átomos de oxígeno.
+    Calculates the coordination number of a set of oxygen atoms.
 
     Parameters
     ----------
     file : str
-        Ruta del archivo que contiene la simulación.
+        Path to the simulation file.
     r_cut_lo : float
-        Radio de corte inferior para buscar átomos de Ox.
+        Lower cutoff radius to search for oxygen atoms.
     r_cut_hi : float
-        Radio de corte superior para buscar átomos de Ox.
+        Upper cutoff radius to search for oxygen atoms.
 
     Returns
     -------
     float
-        El número de coordinación medio del conjunto de átomos de oxígeno.
+        The average coordination number of the set of oxygen atoms.
 
     """
-    # Carga la trayectoria y la topología
+    # Load the trajectory and topology
     u = mda.Universe(file)
 
-    # Selecciona solo los átomos de oxígeno
+    # Select only the oxygen atoms
     oxygen = u.select_atoms("prop 30 < z and prop z < 60 and name O1 and around {} name O1 and not around {} name O1".format(r_cut_hi, r_cut_lo))
     
     coord = [len(u.select_atoms("name O1 and around 3.25 index {}".format(atom.index))) 
@@ -44,17 +44,16 @@ def cn_atom(file, r_cut_lo, r_cut_hi):
     return np.mean(coord)
 
 
-
 def graf_cn(X, Y):
     """
-    Grafica el número de coordinación en función del radio.
+    Plots the coordination number as a function of radius.
 
     Parameters
     ----------
     X : array-like
-        Arreglo con los radios.
+        Array with the radii.
     Y : array-like
-        Arreglo con los números de coordinación correspondientes.
+        Array with the corresponding coordination numbers.
 
     Returns
     -------
@@ -65,68 +64,58 @@ def graf_cn(X, Y):
 
     plt.title('Coordination number/water', fontsize=18)
 
-    # Agrega etiquetas a los ejes
+    # Add labels to the axes
     plt.xlabel('Radius (Å)', fontsize=16)
     plt.ylabel('Coordination Number (CN)', fontsize=16)
-    # plt.xticks(np.arange
 
     plt.legend(fontsize=12)
 
-    # Mostrar el grafico
+    # Show the plot
     plt.show()
-    
-    
+
+
 def processing(olig):
     """
-    Procesa la simulación para calcular el número de coordinación promedio
-    de un conjunto de átomos de oxígeno.
+    Processes the simulation to calculate the average coordination number
+    of a set of oxygen atoms.
 
     Parameters
     ----------
     olig : int
-        Número del oligómero a procesar.
+        Oligomer number to process.
 
     Returns
     -------
     None.
 
     """
-    # Definir la ruta del archivo de simulación
+    # Define the simulation file path
     file = "~/{}_cn.xyz".format(olig)
 
-    # Crear un DataFrame vacío para almacenar los resultados
+    # Create an empty DataFrame to store the results
     df = pd.DataFrame(columns=["R", "CN"])
 
-    # Definir los parámetros para el cálculo del número de coordinación
-    radio_p = 20
+    # Define parameters for coordination number calculation
+    radius_p = 20
     step = 5
-    final = radio_p + step
+    final = radius_p + step
 
-    # Iterar sobre los valores de r_cut para calcular el número de coordinación
+    # Iterates over the r_cut values to calculate the coordination number
     for i in np.arange(step, final, step):
-        # Calcular el valor de r_cut
+        # Calculate the value of r_cut
         r_cut_lo = (final) - i
-        r_cut_hi = radio_p - i
+        r_cut_hi = radius_p - i
 
-        # Calcular el número de coordinación
+        # Calculate the coordination number
         CN = cn_atom(file, r_cut_hi, r_cut_lo)
 
-        # Agregar una fila al DataFrame con los valores de r_cut y el número de coordinación actual
+        # Add a row to the DataFrame with the r_cut values and the current coordination number
         df = df.append({"R": r_cut_lo, "CN": CN}, ignore_index=True)
 
-    # Graficar los resultados
+    # Plot the results
     graf_cn(df.R, df.CN)
 
-    
+
 if __name__ == '__main__':
-    
-       for olig in [4,8,12,24,36]:
-          #olig="water"
-          processing(olig)
-        
-                   
-        
-
-
-        
-    
+    for olig in [4, 8, 12, 24, 36]:
+        processing(olig)
