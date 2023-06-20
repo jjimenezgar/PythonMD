@@ -1,3 +1,4 @@
+import MDAnalysis as mda
 import MDAnalysis.analysis.msd as msda
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,12 +6,12 @@ from scipy import stats
 import seaborn as sns
 import pandas as pd
 
+
 def msd_z(file, atom, z_lo, z_hi):
     """
     Calculates the Mean Squared Displacement (MSD) of a set of atoms in a specific region of the system.
 
-    Parameters
-    ----------
+    Parameters:
     file : str
         Path to the simulation file.
     atom : str
@@ -20,13 +21,11 @@ def msd_z(file, atom, z_lo, z_hi):
     z_hi : float
         Upper value of the range on the Z-axis.
 
-    Returns
-    -------
+    Returns:
     np.ndarray
         Array with the MSD values for each time.
     np.ndarray
         Array with the corresponding lag times for each MSD.
-
     """
     # Load the trajectory and select atoms in the specific region
     u = mda.Universe(file)
@@ -44,12 +43,12 @@ def msd_z(file, atom, z_lo, z_hi):
 
     return msd, lagtimes
 
+
 def plot_msd(index_start, index_end, msd, lagtimes):
     """
     Plots the MSD and calculates the diffusion coefficient.
 
-    Parameters
-    ----------
+    Parameters:
     index_start : int
         Start index for calculating MSD and performing linear regression.
     index_end : int
@@ -59,11 +58,9 @@ def plot_msd(index_start, index_end, msd, lagtimes):
     lagtimes : np.ndarray
         Array with the corresponding lag times for each MSD.
 
-    Returns
-    -------
+    Returns:
     float
         Diffusion coefficient calculated from the slope of the linear regression.
-
     """
     # Perform linear regression of MSD within the specified interval
     slope, intercept, r_value, p_value, std_err = stats.linregress(lagtimes[index_start:index_end], msd[index_start:index_end])
@@ -79,25 +76,24 @@ def plot_msd(index_start, index_end, msd, lagtimes):
 
     return diffusion
 
-def msd_z_grid(atom, file, image_name):
+
+def msd_z_grid(atom, file, image_name,lo_grid, hi_grid, step_grid):
     """
     Calculates and plots the diffusion coefficient of water in different regions along the Z-axis.
 
-    Parameters
-    ----------
+    Parameters:
     atom : str
         Name of the atom to select.
     file : str
         Path to the simulation file.
     image_name : str
         Name of the image file to save the visualization.
-
     """
     # Create an empty DataFrame to store the results
     df = pd.DataFrame(columns=["z", "diffusion"])
 
     # Create a numpy array with the z_hi values directly
-    z = np.arange(0, 100, 10)  # Modify according to desired regions
+    z = np.arange(lo_grid, hi_grid, step_grid)  # Modify according to desired regions
 
     # Create a numpy array to store the results of msd_z and plot_msd
     diffusion = np.zeros(len(z))
@@ -114,19 +110,18 @@ def msd_z_grid(atom, file, image_name):
     # Plot the results
     dosd_plot(df.diffusion, df.z, image_name)
 
+
 def dosd_plot(x, y, image_name):
     """
     Plots the density of diffusion coefficient as a function of the Z position.
 
-    Parameters
-    ----------
+    Parameters:
     x : np.ndarray
         Array with the diffusion coefficient values.
     y : np.ndarray
         Array with the Z position values.
     image_name : str
         Name of the image file to save the visualization.
-
     """
     sns.set_style("white")
     sns.kdeplot(x=x, y=y, cmap="BuPu", shade=False, bw_adjust=0.90)
@@ -154,3 +149,14 @@ def dosd_plot(x, y, image_name):
     plt.tight_layout()
     plt.savefig(image_name, dpi=200)
     plt.show()
+
+
+if __name__ == "__main__":
+    file = input("Enter the path to the file: ")
+    atom = input("Enter the atom name: ")
+    lo_grid = float(input("Enter the lower value of the grid: "))
+    hi_grid = float(input("Enter the upper value of the grid: "))
+    step_grid = float(input("Enter the step of the grid: "))
+    image_name = input("Enter the name of the image file (PNG): ")
+
+    msd_z_grid(atom, file,lo_grid,hi_grid,step_grid, image_name)
