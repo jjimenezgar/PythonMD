@@ -2,14 +2,14 @@ import numpy as np
 import MDAnalysis as mda
 
 class ECSAnalysis:
-    def __init__(self, file1, file2,Lattice,molar_mass):
+    def __init__(self, file1, file2,lattice,molar_mass):
         self.file1 = file1
         self.file2 = file2
-        self.Lattice = float(Lattice)  # Angstrom
+        self.lattice = float(lattice)  # Angstrom
         self.molar_mass = float(molar_mass)  # g/mol of Pt
-        self.Atomic_area_CN9 = (self.Lattice ** 2 * np.sqrt(3)) / 4  # Atomic area for Pt (111) surface
-        self.Atomic_area_CN8 = (self.Lattice ** 2) / 2  # Atomic area for Pt (100) surface
-        self.Atomic_area_CN6 = (self.Lattice ** 2 * np.sqrt(3)) / 2  # Atomic area for Pt NP vertices
+        self.Atomic_area_CN9 = (self.lattice ** 2 * np.sqrt(3)) / 4  # Atomic area for Pt (111) surface
+        self.Atomic_area_CN8 = (self.lattice ** 2) / 2  # Atomic area for Pt (100) surface
+        self.Atomic_area_CN6 = (self.lattice ** 2 * np.sqrt(3)) / 2  # Atomic area for Pt NP vertices
 
     def surface_contact(self, atom1, atom2, r_cut):
         """
@@ -152,13 +152,13 @@ class ECSAnalysis:
 if __name__ == '__main__':
     file1 = input("Enter the path to the first file (Metal_CN): ")
     file2 = input("Enter the path to the second file(Rest of the system): ")
-    Lattice = input("Enter the lattice parameter of the nanoparticle: ")  ## 3.92 Å for Pt
+    lattice = input("Enter the lattice parameter of the nanoparticle: ")  ## 3.92 Å for Pt
     molar_mass = input("Enter the molar mass of the metal: ")  ## 195 g/mol for Pt
     atom2 = input("Enter the atom related to the active area: ")
     r_cut = float(input("Enter the cutoff distance for considering two atoms in contact: "))
 
 
-    ECSA = ECSAnalysis(file1, file2,Lattice,molar_mass) ## Create an instance of the NanoparticleAnalysis class.
+    ECSA = ECSAnalysis(file1, file2,lattice,molar_mass) ## Create an instance of the NanoparticleAnalysis class.
     Surface_metal, total_atoms = ECSA.SA_metal() ## Get the total surface area of the nanoparticle and the total number of atoms in the NP.
     ecsa_maxima = ECSA.ecsa_maxima(Surface_metal, total_atoms) ## Get the ecsa_maxima
     active_surface,n_atoms = ECSA.calculate_surface_area(atom2,r_cut) ## Get the active surface area and the total number of atoms in the active area.
