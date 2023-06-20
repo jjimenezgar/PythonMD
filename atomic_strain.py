@@ -52,5 +52,5 @@ def calculate_atomic_strain(input_file):
 
 if __name__ == "__main__":
     # Example usage
-    input_file = "/path/to/input_file.xyz"
+    input_file = input("Enter the path to the file: ")
     calculate_atomic_strain(input_file)
