@@ -9,7 +9,7 @@ The repository includes the following scripts:
 1. ECSA Determination
 The script ecsa.py calculates the Electrochemically Active Surface Area (ECSA) of a metallic nanoparticle. It utilizes the MDAnalysis library in Python to analyze the atoms of the nanoparticle that are in direct contact with the rest of the simulated system. The calculation result provides the ECSA in m²/g and the catalyst utilization percentage in different systems.
 
-![ECSA](PythonMD/Images/active_area_a.png)
+![ECSA](https://github.com/jjimenezgar/PythonMD/blob/master/Images/active_area_a.png)
 
 
 3. Radial Distribution Function (RDF)
