@@ -1,33 +1,36 @@
-# PythonMD
-Repositorio de Herramientas de Simulación Molecular en Python
-Este repositorio contiene una colección de scripts en Python que se utilizan para realizar análisis y cálculos relacionados con la simulación molecular. Estas herramientas se pueden utilizar para analizar y comprender propiedades estructurales y dinámicas de sistemas moleculares.
+#PythonMD
+Repository of Molecular Simulation Tools in Python
 
-Contenido del repositorio
-El repositorio contiene los siguientes scripts:
+This repository contains a collection of Python scripts used for analysis and calculations related to molecular simulation. These tools can be utilized to analyze and understand the structural and dynamic properties of molecular systems.
 
-1. Determinación del ECSA
-El script ecsa.py calcula el Área Superficial Electroquímicamente Activa (ECSA) de una nanopartícula metálica. Utiliza la librería MDAnalysis de Python para analizar los átomos de la nanopartícula que están en contacto directo con el resto del sistema simulado. El resultado del cálculo proporciona la ECSA en m²/g y el porcentaje de utilización del catalizador en los diferentes sistemas.
+#Repository Contents
+The repository includes the following scripts:
 
-2. Función de Distribución Radial (RDF)
-El script rdf.py calcula la Función de Distribución Radial (RDF) para un sistema molecular dado. Utiliza la librería MDAnalysis de Python para calcular y guardar el RDF en un archivo de salida especificado. El RDF proporciona información sobre la distribución de partículas en el espacio, ofreciendo conocimientos sobre la estructura e interacciones del sistema.
+1. ECSA Determination
+The script ecsa.py calculates the Electrochemically Active Surface Area (ECSA) of a metallic nanoparticle. It utilizes the MDAnalysis library in Python to analyze the atoms of the nanoparticle that are in direct contact with the rest of the simulated system. The calculation result provides the ECSA in m²/g and the catalyst utilization percentage in different systems.
 
-3. Análisis estructural del agua
-El script cluster_analysis.py utiliza la herramienta OVITO con su módulo de Python para realizar el análisis de clusters de agua en un sistema molecular. Identifica conjuntos de partículas conectadas y determina sus tamaños basados en un criterio de vecindad. Este análisis permite comprender la estructura y organización del agua en el sistema.
+2. Radial Distribution Function (RDF)
+The script rdf.py calculates the Radial Distribution Function (RDF) for a given molecular system. It uses the MDAnalysis library in Python to calculate and save the RDF in a specified output file. The RDF provides information about the particle distribution in space, offering insights into the system's structure and interactions.
 
-4. Determinación de estructuras cristalinas (CNA)
-El script cna.py determina la estructura cristalina de nanopartículas utilizando el método de análisis de los primeros vecinos (CNA) de OVITO. Calcula las fracciones de las estructuras HCP, FCC, ICO y otras presentes en el sistema y genera un informe que incluye los resultados. Este análisis es útil para comprender la organización atómica de las nanopartículas.
+3. Water Structural Analysis
+The script cluster_analysis.py utilizes the OVITO tool with its Python module to perform cluster analysis of water in a molecular system. It identifies sets of connected particles and determines their sizes based on a neighborhood criterion. This analysis helps in understanding the structure and organization of water in the system.
 
-5. Deformación atómica en nanopartículas
-El script atomic_strain.py calcula la deformación atómica de un sistema utilizando la herramienta Atomic Strain de OVITO. Calcula el tensor de deformación y el gradiente de deformación a nivel atómico en cada partícula, a partir del movimiento relativo de sus vecinos. Proporciona información sobre las deformaciones locales en las nanopartículas.
+4. Crystal Structure Determination (CNA)
+The script cna.py determines the crystal structure of nanoparticles using the Common Neighbor Analysis (CNA) method in OVITO. It calculates the fractions of HCP, FCC, ICO, and other present structures in the system and generates a report that includes the results. This analysis is useful for understanding the atomic organization of nanoparticles.
 
-6. Determinación del MSD y el coeficiente de difusión
-El script MSD_Diffusion.py calcula el desplazamiento cuadrático medio (MSD) y grafica el coeficiente de difusión del agua en diferentes regiones a lo largo del eje Z en una simulación molecular. Utiliza la librería MDAnalysis para cargar la trayectoria de la simulación, calcular el MSD y obtener el coeficiente de difusión mediante una regresión lineal. También genera una visualización de la densidad del coeficiente de difusión.
+5. Atomic Deformation in Nanoparticles
+The script atomic_strain.py calculates the atomic deformation of a system using the Atomic Strain tool in OVITO. It calculates the deformation tensor and deformation gradient at the atomic level in each particle, based on the relative motion of its neighbors. It provides information about local deformations in nanoparticles.
 
-7. Coordinación de átomos de oxígeno en simulaciones de dinámica molecular
-Este repositorio contiene un script en Python llamado "cn_water.py" basado en la librería MDAnalysis. El script permite calcular y visualizar el número de coordinación de un conjunto de átomos de oxígeno en una simulación de dinámica molecular. Proporciona una herramienta útil para analizar la distribución de agua en esta región crítica.
+6. MSD and Diffusion Coefficient Determination
+The script MSD_Diffusion.py calculates the Mean Squared Displacement (MSD) and plots the diffusion coefficient of water in different regions along the Z-axis in a molecular simulation. It uses the MDAnalysis library to load the simulation trajectory, calculate the MSD, and obtain the diffusion coefficient through linear regression. It also generates a visualization of the diffusion coefficient density.
 
-8. Cálculo de densidad del agua en la región de TPB
-Este repositorio también incluye otro script llamado "density_2D.py" que utiliza la librería MDAnalysis para calcular y visualizar la densidad media del agua en la región de TPB en sistemas de dinámica molecular. El script generará un mapa de calor que muestra la distribución de densidad. Esta herramienta es útil para analizar la distribución de agua en esta región crítica.
+7. Water molecule Coordination in Molecular Dynamics Simulations
+This repository contains a Python script named cn_water.py based on the MDAnalysis library. The script allows for the calculation and visualization of the coordination number of a set of oxygen atoms in a molecular dynamics simulation. It provides a useful tool for analyzing the water distribution in this critical region.
 
-9. Solubilidad y permeaación de oxígeno e hidrógeno en la TPB
-En este repositorio, también encontrará scripts relacionados con la solubilidad y permeación de oxígeno e hidrógeno en la TPB. Estos scripts permiten determinar las concentraciones de oxígeno e hidrógeno en sistemas con diferentes contenidos de ionómero, así como la concentración de gas presente en la superficie del metal.
+8. Water Density Calculation in the TPB Region
+This repository also includes another script named density_2D.py that uses the MDAnalysis library to calculate and visualize the average water density in the TPB region in molecular dynamics systems. The script generates a heatmap that displays the density distribution. This tool is helpful for analyzing the water distribution in this critical region.
+
+9. Oxygen and Hydrogen Solubility and Permeation in the TPB
+In this repository, you will also find scripts related to the solubility and permeation of oxygen and hydrogen in the TPB. These scripts allow for determining the concentrations of oxygen and hydrogen in systems with different ionomer contents, as well as the gas concentration present on the metal surface.
+
+Please refer to the individual scripts for more detailed information on their usage and functionalities.
