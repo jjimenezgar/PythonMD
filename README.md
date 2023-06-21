@@ -1,5 +1,5 @@
 # PythonMD
-Repository of Molecular Simulation Tools in Python
+Repository of Molecular Dynamics Simulations Tools in Python
 
 This repository contains a collection of Python scripts used for analysis and calculations related to molecular simulation. These tools can be utilized to analyze and understand the structural and dynamic properties of molecular systems.
 
@@ -15,16 +15,16 @@ The script rdf.py calculates the Radial Distribution Function (RDF) for a given 
 3. Water Structural Analysis
 The script cluster_analysis.py utilizes the OVITO tool with its Python module to perform cluster analysis of water in a molecular system. It identifies sets of connected particles and determines their sizes based on a neighborhood criterion. This analysis helps in understanding the structure and organization of water in the system.
 
-4. Crystal Structure Determination (CNA)
+4. Common Neighbor Analysis (CNA)
 The script cna.py determines the crystal structure of nanoparticles using the Common Neighbor Analysis (CNA) method in OVITO. It calculates the fractions of HCP, FCC, ICO, and other present structures in the system and generates a report that includes the results. This analysis is useful for understanding the atomic organization of nanoparticles.
 
-5. Atomic Deformation in Nanoparticles
+5. Atomic Strain in Nanoparticles
 The script atomic_strain.py calculates the atomic deformation of a system using the Atomic Strain tool in OVITO. It calculates the deformation tensor and deformation gradient at the atomic level in each particle, based on the relative motion of its neighbors. It provides information about local deformations in nanoparticles.
 
 6. MSD and Diffusion Coefficient Determination
 The script MSD_Diffusion.py calculates the Mean Squared Displacement (MSD) and plots the diffusion coefficient of water in different regions along the Z-axis in a molecular simulation. It uses the MDAnalysis library to load the simulation trajectory, calculate the MSD, and obtain the diffusion coefficient through linear regression. It also generates a visualization of the diffusion coefficient density.
 
-7. Water molecule Coordination in Molecular Dynamics Simulations
+7. Water Molecule Coordination in Molecular Dynamics Simulations
 This repository contains a Python script named cn_water.py based on the MDAnalysis library. The script allows for the calculation and visualization of the coordination number of a set of oxygen atoms in a molecular dynamics simulation. It provides a useful tool for analyzing the water distribution in this critical region.
 
 8. Water Density Calculation in the TPB Region
