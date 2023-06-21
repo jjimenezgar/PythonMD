@@ -1,4 +1,4 @@
-# PythonMD :snake: :computer:	
+# PythonMD :snake: :computer:	:atom:
 Repository of Molecular Dynamics Simulations Tools in Python
 
 This repository contains a collection of Python scripts used for analysis and calculations related to molecular simulation. These tools can be utilized to analyze and understand the structural and dynamic properties of molecular systems.
