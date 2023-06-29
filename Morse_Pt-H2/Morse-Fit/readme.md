@@ -4,6 +4,6 @@ To use the code, make sure you have the necessary input file (Ea.xyz) in the spe
 
 To run the code, execute the script as the main module. Ensure that the required parameters for the interactions (d_e, alpha, r_e, d_e2, alpha2, r_e2) are appropriately set within the nested loops.
 
-the refinada.sh file allows us to select the parameters that reproduce the activation energy (E_activation) and adsorption energy (E_adsorption) values close to those reported in DFT.
+The refinada.sh file allows us to select the parameters that reproduce the activation energy (E_activation) and adsorption energy (E_adsorption) values close to those reported in DFT.
 
 Note: The code assumes the existence of the necessary libraries and file paths as mentioned in the comments. Please modify the paths and dependencies as per your system configuration.
