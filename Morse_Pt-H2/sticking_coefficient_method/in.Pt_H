@@ -1,0 +1,68 @@
+units		metal
+
+atom_style	full
+read_data	update.data
+
+
+
+######################Variables########
+
+variable        e equal DE # Energy  0.005 eV
+variable        a equal alfa #Alfa
+variable        r equal 2.2 #Distance  2.8 A
+
+variable rnseed index 10
+variable number equal ceil(random(1,1000000000,${rnseed})/100000.0)
+
+
+###########################
+
+bond_style harmonic
+bond_coeff   1  19.21  0.95  # H-H hydrongen
+
+pair_style hybrid lj/cut 10 morse 8.0  eam 
+pair_coeff 1*2 1*2  eam Pt_u3.eam
+pair_coeff 3 3 lj/cut 0.0 0.0
+pair_coeff 1 3 morse  $e $a $r 
+pair_coeff 2 3 morse  D2 alpha2 RE
+
+#######
+
+neighbor	2 bin
+neigh_modify	every 10 delay 0 check no
+
+
+group Pt type 1 2
+group Hy type 3
+
+fix 1 all nve
+fix 2 all langevin 300 300 0.1 ${number}
+fix 3 Hy setforce 0.0 0.0 0.0
+thermo_style custom step temp ke pe etotal
+thermo 1000
+timestep        0.001
+run 400
+
+unfix 1
+unfix 2
+unfix 3
+
+### Lanzamiento de proyectil
+
+dump             3 all xyz 10 SC_Pt_H_EK_DE_D2_alfa_alpha2_RE.xyz
+dump_modify      3 element Pt Pt H
+dump_modify    3 append yes   ### juntar los 50 loops
+
+velocity Hy set 0 0 -EK  ### Velocity = Kinetic energy 44 A/ps= 20 KJ/mol
+
+fix 1 all nve
+fix 2 Pt langevin 300 300 0.1 ${number}
+fix 3 Hy shake 0.0001 20 0 b 1
+fix 44 Hy wall/lj126 zhi 1000 1.0 1.0 1.122462 units box pbc yes
+thermo_style custom step temp ke pe etotal
+thermo 100
+timestep        0.001
+run 1000
+
+
+
