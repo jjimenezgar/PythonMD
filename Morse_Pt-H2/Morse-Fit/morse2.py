@@ -16,7 +16,7 @@ def morse_2(d_e, alpha, r_e, d_e2, alpha2, r_e2):
     """
 
     # Load molecular dynamics simulation data
-    u = mda.Universe('/home/johnconnor/Documentos/PtH_MD/morse_parameters/Ea.xyz')
+    u = mda.Universe('/home/Ea.xyz')
 
     # Select atoms for which interaction energy will be calculated
     atomo1 = u.select_atoms('name H')
@@ -56,7 +56,7 @@ def morse_2(d_e, alpha, r_e, d_e2, alpha2, r_e2):
         total_energy.append(sum(f_energy))
 
     df = pd.DataFrame({'Distance': z_distance, 'Energy': total_energy})
-    df.to_csv('/home/johnconnor/Documentos/PtH_MD/mp_rep_2/Energies/Energy_{}__{}__{}__{}__{}__{}_.dat'.format(d_e, alpha, r_e, d_e2, alpha2, r_e2), index=False, sep='\t')
+    df.to_csv('/home/Energies/Energy_{}__{}__{}__{}__{}__{}_.dat'.format(d_e, alpha, r_e, d_e2, alpha2, r_e2), index=False, sep='\t')
 
 if __name__ == '__main__':
     r_e = 2.2
